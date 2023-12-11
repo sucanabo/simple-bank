@@ -5,7 +5,6 @@ package db
 
 import (
 	"context"
-	"database/sql"
 )
 
 const createTransfer = `-- name: CreateTransfer :one
@@ -19,9 +18,9 @@ RETURNING id, from_account_id, to_account_id, amount, create_at
 `
 
 type CreateTransferParams struct {
-	FromAccountID sql.NullInt64 `json:"from_account_id"`
-	ToAccountID   sql.NullInt64 `json:"to_account_id"`
-	Amount        int64         `json:"amount"`
+	FromAccountID int64 `json:"from_account_id"`
+	ToAccountID   int64 `json:"to_account_id"`
+	Amount        int64 `json:"amount"`
 }
 
 func (q *Queries) CreateTransfer(ctx context.Context, arg CreateTransferParams) (Transfer, error) {
@@ -35,6 +34,16 @@ func (q *Queries) CreateTransfer(ctx context.Context, arg CreateTransferParams) 
 		&i.CreateAt,
 	)
 	return i, err
+}
+
+const deleteTrasnfer = `-- name: DeleteTrasnfer :exec
+DELETE FROM entries
+WHERE id = $1
+`
+
+func (q *Queries) DeleteTrasnfer(ctx context.Context, id int64) error {
+	_, err := q.db.ExecContext(ctx, deleteTrasnfer, id)
+	return err
 }
 
 const getTransfer = `-- name: GetTransfer :one

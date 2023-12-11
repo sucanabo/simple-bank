@@ -18,3 +18,7 @@ SELECT * FROM transfers
 ORDER BY create_at DESC
 LIMIT $1
 OFFSET $2;
+
+-- name: DeleteTrasnfer :exec
+DELETE FROM entries
+WHERE id = $1;
